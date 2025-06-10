@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:sushiapp/components/button.dart';
 import 'package:sushiapp/components/food_tile.dart';
 import 'package:sushiapp/models/food.dart';
+import 'package:sushiapp/pages/food_details_page.dart';
 import 'package:sushiapp/themes/colors.dart';
 
 class MenuPages extends StatefulWidget {
@@ -17,7 +18,7 @@ class _MenuPagesState extends State<MenuPages> {
     Food(
       name: "Salmón Sushi",
       price: "21.00",
-      imagePath: "assets/imagenes/salmon_eggs.png",
+      imagePath: "assets/imagenes/salmon_sushi.png",
       rating: "4.9",
     ),
     Food(
@@ -27,6 +28,15 @@ class _MenuPagesState extends State<MenuPages> {
       rating: "4.3",
     ),
   ];
+  void navigatorToFoodDetails(int index) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FoodDetailsPage(food: foodMenu[index]),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,6 +49,7 @@ class _MenuPagesState extends State<MenuPages> {
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Container(
             decoration: BoxDecoration(
@@ -56,11 +67,11 @@ class _MenuPagesState extends State<MenuPages> {
                     Text(
                       "Get 32% Promo",
                       style: GoogleFonts.dmSerifDisplay(
-                        fontSize: 20,
+                        fontSize: 10,
                         color: Colors.white,
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 15),
                     MyButton(text: "Redeem", onTap: () {}),
                   ],
                 ),
@@ -70,7 +81,7 @@ class _MenuPagesState extends State<MenuPages> {
             ),
           ),
 
-          const SizedBox(height: 25),
+          const SizedBox(height: 15),
 
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -84,6 +95,19 @@ class _MenuPagesState extends State<MenuPages> {
                   borderSide: BorderSide(color: Colors.white),
                   borderRadius: BorderRadius.circular(20),
                 ),
+                hintText: "Search here...",
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 25.0),
+            child: Text(
+              "Popular",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[800],
+                fontSize: 15,
               ),
             ),
           ),
@@ -104,31 +128,51 @@ class _MenuPagesState extends State<MenuPages> {
 
           Expanded(
             child: ListView.builder(
-              scrollDirection: Axis.horizontal,
               itemCount: foodMenu.length,
+              scrollDirection: Axis.horizontal,
               itemBuilder:
-                  (BuildContext context, int index) =>
-                      FoodTile(food: foodMenu[index]),
+                  (BuildContext context, int index) => FoodTile(
+                    food: foodMenu[index],
+                    onTap: () => navigatorToFoodDetails(index),
+                  ),
             ),
           ),
           const SizedBox(height: 25),
 
           Container(
+            decoration: BoxDecoration(
+              color: Colors.grey[100],
+              borderRadius: BorderRadius.circular(20),
+            ),
+            margin: const EdgeInsets.only(left: 25, right: 25, bottom: 25),
+            padding: const EdgeInsets.all(20),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Image.asset("assets/imagenes/salmon_eggs.png", height: 60),
-
-                const SizedBox(width: 10),
-
-                Column(
+                Row(
                   children: [
-                    Text(
-                      "Salmon eggs",
-                      style: GoogleFonts.dmSerifDisplay(fontSize: 18),
+                    Image.asset("assets/imagenes/salmon_eggs.png", height: 60),
+                    const SizedBox(width: 20),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Salmon Eggs",
+                          style: GoogleFonts.dmSerifDisplay(fontSize: 18),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          "\$21.00",
+                          style: TextStyle(color: Colors.grey[700]),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 10),
-                    Text("\$21.00", style: TextStyle(color: Colors.grey[700])),
                   ],
+                ),
+                const Icon(
+                  Icons.favorite_outline,
+                  color: Colors.grey,
+                  size: 28,
                 ),
               ],
             ),
