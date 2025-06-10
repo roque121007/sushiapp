@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:sushiapp/components/button.dart';
 import 'package:sushiapp/components/food_tile.dart';
 import 'package:sushiapp/models/food.dart';
+import 'package:sushiapp/models/shop.dart';
 import 'package:sushiapp/pages/food_details_page.dart';
 import 'package:sushiapp/themes/colors.dart';
 
@@ -14,21 +16,9 @@ class MenuPages extends StatefulWidget {
 }
 
 class _MenuPagesState extends State<MenuPages> {
-  List foodMenu = [
-    Food(
-      name: "Salmón Sushi",
-      price: "21.00",
-      imagePath: "assets/imagenes/salmon_sushi.png",
-      rating: "4.9",
-    ),
-    Food(
-      name: "Tuna",
-      price: "21.00",
-      imagePath: "assets/imagenes/tuma.png",
-      rating: "4.3",
-    ),
-  ];
   void navigatorToFoodDetails(int index) {
+    final shop = context.read<Shop>();
+    final foodMenu = shop.foodMenu;
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -39,13 +29,25 @@ class _MenuPagesState extends State<MenuPages> {
 
   @override
   Widget build(BuildContext context) {
+    final shop = context.read<Shop>();
+    final foodMenu = shop.foodMenu;
     return Scaffold(
       backgroundColor: Colors.grey[300],
       appBar: AppBar(
+        centerTitle: true,
         backgroundColor: Colors.transparent,
+        foregroundColor: Colors.grey[800],
         elevation: 0,
-        leading: Icon(Icons.menu, color: Colors.grey[900]),
-        title: Text("tokyo", style: TextStyle(color: Colors.grey[900])),
+        leading: const Icon(Icons.menu),
+        title: const Text("tokyo", textAlign: TextAlign.center),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.pushNamed(context, "/cartpage");
+            },
+            icon: const Icon(Icons.shopping_cart),
+          ),
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

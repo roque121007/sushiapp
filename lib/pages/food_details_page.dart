@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:sushiapp/components/button.dart';
 import 'package:sushiapp/models/food.dart';
+import 'package:sushiapp/models/shop.dart';
 import 'package:sushiapp/themes/colors.dart';
 
 class FoodDetailsPage extends StatefulWidget {
@@ -15,7 +18,9 @@ class _FoodDetailsPageState extends State<FoodDetailsPage> {
   int quantityCoun = 0;
   void decremenQuantity() {
     setState(() {
-      quantityCoun--;
+      if (quantityCoun > 0) {
+        quantityCoun--;
+      }
     });
   }
 
@@ -25,6 +30,34 @@ class _FoodDetailsPageState extends State<FoodDetailsPage> {
         quantityCoun++;
       });
     });
+  }
+
+  void addToCart() {
+    if (quantityCoun > 0) {
+      final shop = context.read<Shop>();
+      shop.addToCart(widget.food, quantityCoun);
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder:
+            (context) => AlertDialog(
+              backgroundColor: primaryColor,
+              content: const Text(
+                "Sucessfully adde to cart",
+                style: TextStyle(color: Colors.white),
+                textAlign: TextAlign.center,
+              ),
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(Icons.done, color: Colors.white),
+                ),
+              ],
+            ),
+      );
+    }
   }
 
   @override
@@ -102,42 +135,49 @@ class _FoodDetailsPageState extends State<FoodDetailsPage> {
                         fontSize: 18,
                       ),
                     ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: secondaryColor,
-                        shape: BoxShape.circle,
-                      ),
-                      child: IconButton(
-                        onPressed: decremenQuantity,
-                        icon: const Icon(Icons.remove, color: Colors.white),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 40,
-                      child: Center(
-                        child: Text(
-                          quantityCoun.toString(),
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
+                    Row(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: secondaryColor,
+                            shape: BoxShape.circle,
+                          ),
+                          child: IconButton(
+                            onPressed: decremenQuantity,
+                            icon: const Icon(Icons.remove, color: Colors.white),
                           ),
                         ),
-                      ),
-                    ),
+                        SizedBox(
+                          width: 40,
+                          child: Center(
+                            child: Text(
+                              quantityCoun.toString(),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
+                        ),
 
-                    Container(
-                      decoration: BoxDecoration(
-                        color: secondaryColor,
-                        shape: BoxShape.circle,
-                      ),
-                      child: IconButton(
-                        onPressed: incremenQuantity,
-                        icon: const Icon(Icons.add, color: Colors.white),
-                      ),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: secondaryColor,
+                            shape: BoxShape.circle,
+                          ),
+                          child: IconButton(
+                            onPressed: incremenQuantity,
+                            icon: const Icon(Icons.add, color: Colors.white),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
+                const SizedBox(height: 25),
+
+                MyButton(text: "Add To Cart", onTap: addToCart),
               ],
             ),
           ),
